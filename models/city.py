@@ -1,4 +1,5 @@
-ty class."""
+#!/usr/bin/python3
+"""City class."""
 from models.base_model import Base
 from models.base_model import BaseModel
 from sqlalchemy import Column

@@ -1,4 +1,5 @@
-lass."""
+#!/usr/bin/python3
+"""Review class."""
 from models.base_model import Base
 from models.base_model import BaseModel
 from sqlalchemy import Column
