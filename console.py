@@ -10,53 +10,12 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from models.__init__ import storage
 
 class HBNBCommand(cmd.Cmd):
-    """Command interpreter for the HBNB project
+    """ Contains the functionality for the HBNB console"""
 
-
-    **CMD MODULE CONVENTION**
-
-
-    The cmd module in Python provides a framework for writing
-    line-oriented command interpreters. It provides a base class, cmd.Cmd,
-    that defines methods and attributes for creating a command-line interface.
-
-    Conventions followed by the cmd module:
-
-    Command methods must start with the prefix ``do_``
-
-    *Examples:*\n
-    ``do_quit()`` will run the command ``quit`` \n
-    ``do_foo()`` will run the command ``foo``
-
-    \n
-
-    Help methods must start with the prefix ``help_``
-
-     *Examples:*\n
-    ``help_quit()`` will run the command ``help quit`` \n
-    ``help_save()`` will run the command ``help save``
-
-    The ``emptyline()`` method is called when an empty line is entered in the
-    command prompt. By default, it repeats the last non-empty command entered.
-    However, it can be overridden to perform a different action or pass.
-
-    The ``EOF`` command (or Ctrl-D) is handled by the ``do_EOF()`` method,
-    which by default exits the command interpreter.
-
-    The ``quit`` command is handled by the ``do_quit()`` method,
-    which by default exits the command interpreter.
-
-    The ``help`` command is handled by the ``do_help()`` method,
-    which by default lists all available commands and their brief descriptions.
-
-    More information can be found in the official documentation on
-    [cmd source code](https://github.com/python/cpython/blob/3.11/Lib/cmd.py)
-    """
-
-    # prints (hbnb) if the script is running in a terminal otherwise ''
+    # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
@@ -64,9 +23,7 @@ class HBNBCommand(cmd.Cmd):
         'State': State, 'City': City, 'Amenity': Amenity,
         'Review': Review
     }
-
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
-
     types = {
         'number_rooms': int, 'number_bathrooms': int,
         'max_guest': int, 'price_by_night': int,
@@ -86,7 +43,7 @@ class HBNBCommand(cmd.Cmd):
         """
         _cmd = _cls = _id = _args = ''  # initialize line elements
 
-        # scan for general formatting - i.e '.', '(', ')'
+        # scan for general formating - i.e '.', '(', ')'
         if not ('.' in line and '(' in line and ')' in line):
             return line
 
@@ -101,7 +58,7 @@ class HBNBCommand(cmd.Cmd):
             if _cmd not in HBNBCommand.dot_cmds:
                 raise Exception
 
-            # if parentheses contain arguments, parse them
+            # if parantheses contain arguments, parse them
             pline = pline[pline.find('(') + 1:pline.find(')')]
             if pline:
                 # partition args: (<id>, [<delim>], [<*args>])
@@ -116,8 +73,8 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] == '}' \
-                            and type(eval(pline)) is dict:
+                    if pline[0] == '{' and pline[-1] == '}'\
+                            and type(eval(pline)) == dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
@@ -166,7 +123,7 @@ class HBNBCommand(cmd.Cmd):
 
         # the 1st element of the list is the class name
         class_name = args[0]
-
+        print(class_name)
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
@@ -225,7 +182,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(models.storage.all()[key])
+            print(storage._FileStorage__objects[key])
         except KeyError:
             print("** no instance found **")
 
@@ -246,7 +203,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        if c_name not in self.classes:
+        if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
@@ -257,8 +214,8 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del (models.storage.all()[key])
-            models.storage.save()
+            del (storage.all()[key])
+            storage.save()
         except KeyError:
             print("** no instance found **")
 
@@ -272,15 +229,15 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            class_name = args.split()[0]
-            if class_name not in self.classes:
+            args = args.split(' ')[0]  # remove possible trailing args
+            if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in models.storage.all().items():
-                if k.split('.')[0] == class_name:
+            for k, v in storage._FileStorage__objects.items():
+                if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in models.storage.all().items():
+            for k, v in storage._FileStorage__objects.items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -293,7 +250,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in models.storage._FileStorage__objects.items():
+        for k, v in storage._FileStorage__objects.items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
@@ -313,7 +270,7 @@ class HBNBCommand(cmd.Cmd):
         else:  # class name not present
             print("** class name missing **")
             return
-        if c_name not in self.classes:  # class name invalid
+        if c_name not in HBNBCommand.classes:  # class name invalid
             print("** class doesn't exist **")
             return
 
@@ -329,7 +286,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         # determine if key is present
-        if key not in models.storage.all():
+        if key not in storage.all():
             print("** no instance found **")
             return
 
@@ -363,7 +320,7 @@ class HBNBCommand(cmd.Cmd):
             args = [att_name, att_val]
 
         # retrieve dictionary of current objects
-        new_dict = models.storage.all()[key]
+        new_dict = storage.all()[key]
 
         # iterate through attr names and values
         for i, att_name in enumerate(args):
@@ -377,8 +334,8 @@ class HBNBCommand(cmd.Cmd):
                     print("** value missing **")
                     return
                 # type cast as necessary
-                if att_name in self.types:
-                    att_val = self.types[att_name](att_val)
+                if att_name in HBNBCommand.types:
+                    att_val = HBNBCommand.types[att_name](att_val)
 
                 # update dictionary with name, value pair
                 new_dict.__dict__.update({att_name: att_val})
@@ -392,10 +349,4 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == "__main__":
-    """
-    Repeatedly issue a prompt, accept input, parse an initial prefix
-    off the received input, and dispatch to action methods, passing them
-    the remainder of the line as argument.
-    (see: https://github.com/python/cpython/blob/3.8/Lib/cmd.py#L98)
-    """
     HBNBCommand().cmdloop()
