@@ -1,4 +1,5 @@
- unnittests for models/place.py."""
+#!/usr/bin/python3
+"""Defines unnittests for models/place.py."""
 import os
 import pep8
 import models
