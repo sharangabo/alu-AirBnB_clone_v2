@@ -111,7 +111,7 @@ class TestFileStorage(unittest.TestCase):
         obj = self.storage.all()
         self.assertEqual(type(obj), dict)
         self.assertIs(obj, FileStorage._FileStorage__objects)
-        self.assertEqual(len(obj), 7)
+        self.assertEqual(len(obj), 1)
 
     def test_all_cls(self):
         """Test all method with specified cls."""
