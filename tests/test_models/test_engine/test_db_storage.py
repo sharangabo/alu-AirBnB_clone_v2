@@ -107,7 +107,7 @@ class TestDBStorage(unittest.TestCase):
     def test_init(self):
         """Test initialization."""
         self.assertTrue(isinstance(self.storage, DBStorage))
- 
+
     @unittest.skipIf(type(models.storage) == FileStorage,
                      "Testing FileStorage")
     def test_all(self):
