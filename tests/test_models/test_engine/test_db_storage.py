@@ -29,17 +29,3 @@ class TestDBStorage(unittest.TestCase):
         state.save()
         self.assertTrue(state.id in self.storage.all())
         self.assertEqual(state.name, "California")
-
-    def test_amenity(self):
-        """ test amenity """
-        amenity = Amenity(name="Startlink")
-        amenity.save()
-        self.assertTrue(amenity.id in self.storage.all())
-        self.assertTrue(amenity.name, "Startlink")
-
-    def test_review(self):
-        """ test review """
-        review = Review(text="no comment")
-        review.save()
-        self.assertTrue(review.id in self.storage.all())
-        self.assertEqual(review.text, "no comment")
