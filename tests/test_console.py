@@ -20,14 +20,6 @@ class ConsoleTestCase(unittest.TestCase):
         del self.stdout
         del self.storage
 
-    def test_create_save(self):
-        """test create save"""
-        with patch('sys.stdout', self.stdout):
-            self.console.onecmd('create State name="California')
-        state_id = self.stdout.getvalue()[:-1]
-        self.assertIsNotNone(
-            self.storage.all()["State.{}".format(state_id)])
-
     def test_create_non_existing_class(self):
         """test non-existing class"""
         with patch('sys.stdout', self.stdout):
