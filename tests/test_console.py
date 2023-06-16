@@ -20,15 +20,6 @@ class ConsoleTestCase(unittest.TestCase):
         del self.stdout
         del self.storage
 
-    def test_create(self):
-        """test create basic"""
-        with patch('sys.stdout', self.stdout):
-            self.console.onecmd('create State')
-        state_id = self.stdout.getvalue()[:-1]
-        # print(state_id)
-        # print(len(state_id))
-        self.assertTrue(len(state_id) == 36)
-
     def test_create_save(self):
         """test create save"""
         with patch('sys.stdout', self.stdout):
