@@ -9,6 +9,8 @@ from models.place import Place
 from models.city import City
 import os
 
+
+# skip these test if the storage is not db
 class TestDBStorage(unittest.TestCase):
     """DB Storage test"""
 
