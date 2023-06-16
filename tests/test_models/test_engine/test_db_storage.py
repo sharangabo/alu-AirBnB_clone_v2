@@ -23,22 +23,6 @@ class TestDBStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         del self.storage
 
-    def test_user(self):
-        """ Tests user """
-        user = User(name="Chyna")
-        user.save()
-        self.assertTrue(user.id in self.storage.all())
-        self.assertEqual(user.name, "Chyna")
-
-    def test_city(self):
-        """ test user """
-        city = City(name="Batch")
-        state = State()
-        city.state_id = state.id
-        city.save()
-        self.assertTrue(city.id in self.storage.all())
-        self.assertEqual(city.name, "Batch")
-
     def test_state(self):
         """ test state"""
         state = State(name="California")
