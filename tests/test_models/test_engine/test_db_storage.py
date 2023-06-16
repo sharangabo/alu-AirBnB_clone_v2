@@ -8,13 +8,12 @@ from models.state import State
 from models.place import Place
 from models.city import City
 import os
-from test_models.test_engine import test_db_storage
 
 class TestDBStorage(unittest.TestCase):
     """DB Storage test"""
 
     def setUp(self):
-       """ Set up test environment """
+        """ Set up test environment """
         self.storage = models.storage
 
     def tearDown(self):
