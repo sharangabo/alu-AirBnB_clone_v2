@@ -10,7 +10,7 @@ from models.city import City
 import os
 
 
-class TestDBStorage(unittest.TestCase):
+class TestDBStorage
     """DB Storage test"""
 
 def setUp(self):
